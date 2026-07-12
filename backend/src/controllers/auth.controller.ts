@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { registerSchema } from "../schemas/auth.schema";
 import { registerUser } from "../services/auth.service";
-
+import ApiResponse from "../utils/ApiResponse";
 export const register = async (
   req: Request,
   res: Response
@@ -13,11 +13,9 @@ export const register = async (
     // Register user
     const user = await registerUser(data);
 
-    res.status(201).json({
-      success: true,
-      message: "User registered successfully",
-      user,
-    });
+    res
+      .status(201)
+      .json(new ApiResponse("User registered successfully", user));
   } catch (error: any) {
     res.status(400).json({
       success: false,

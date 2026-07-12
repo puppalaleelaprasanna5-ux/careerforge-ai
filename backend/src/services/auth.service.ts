@@ -1,7 +1,7 @@
 import prisma from "../prisma/client";
 import bcrypt from "bcrypt";
 import { RegisterInput } from "../schemas/auth.schema";
-
+import ApiError from "../utils/ApiError";
 export const registerUser = async (data: RegisterInput) => {
   const { name, email, password } = data;
 
@@ -13,7 +13,7 @@ export const registerUser = async (data: RegisterInput) => {
   });
 
   if (existingUser) {
-    throw new Error("Email already registered");
+    throw new ApiError(409, "Email already registered");
   }
 
   // Hash password
