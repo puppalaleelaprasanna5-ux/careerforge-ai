@@ -24,7 +24,7 @@ model Resume {
   extractedText String
   uploadedAt    DateTime    @default(now())
 
-  userId        String
+  userId String @unique
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   analyses      Analysis[]
