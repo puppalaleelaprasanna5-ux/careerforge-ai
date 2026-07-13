@@ -2,31 +2,32 @@ import { Request, Response } from "express";
 
 import asyncHandler from "../utils/asyncHandler";
 import ApiResponse from "../utils/ApiResponse";
+import ApiError from "../utils/ApiError";
 
-import { registerSchema } from "../schemas/auth.schema";
-import { loginSchema } from "../schemas/login.schema";
+import { uploadResume } from "../services/resume.service";
 
-import {
-  registerUser,
-  loginUser,
-} from "../services/auth.service";
+export const upload = asyncHandler(
+  async (req: Request, res: Response) => {
+    const file = req.file;
 
-export const register = asyncHandler(async (req: Request, res: Response) => {
-  const data = registerSchema.parse(req.body);
+    if (!file) {
+      throw new ApiError(400, "Please upload a PDF resume");
+    }
 
-  const user = await registerUser(data);
+    // Temporary user ID until JWT middleware is added
+    const userId = req.body.userId;
 
-  res
-    .status(201)
-    .json(new ApiResponse("User registered successfully", user));
-});
+    if (!userId) {
+      throw new ApiError(400, "User ID is required");
+    }
 
-export const login = asyncHandler(async (req: Request, res: Response) => {
-  const data = loginSchema.parse(req.body);
+    const resume = await uploadResume(userId, file);
 
-  const result = await loginUser(data);
-
-  res
-    .status(200)
-    .json(new ApiResponse("Login successful", result));
-});
+    res.status(201).json(
+      new ApiResponse(
+        "Resume uploaded successfully",
+        resume
+      )
+    );
+  }
+);
