@@ -1,7 +1,5 @@
 import bcrypt from "bcrypt";
-
 import prisma from "../prisma/client";
-
 import ApiError from "../utils/ApiError";
 import generateToken from "../utils/generateToken";
 
@@ -52,12 +50,9 @@ export const loginUser = async (data: LoginInput) => {
     throw new ApiError(401, "Invalid email or password");
   }
 
-  const isPasswordValid = await bcrypt.compare(
-    password,
-    user.password
-  );
+  const validPassword = await bcrypt.compare(password, user.password);
 
-  if (!isPasswordValid) {
+  if (!validPassword) {
     throw new ApiError(401, "Invalid email or password");
   }
 
