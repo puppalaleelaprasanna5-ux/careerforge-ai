@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth.routes";
 import resumeRoutes from "./routes/resume.routes";
 
 import errorHandler from "./middleware/error.middleware";
+import analysisRoutes from "./routes/analysis.routes";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get("/", (_req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
+app.use("/api/analysis", analysisRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

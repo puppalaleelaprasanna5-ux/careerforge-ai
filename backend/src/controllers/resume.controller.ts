@@ -9,13 +9,6 @@ import { uploadResume } from "../services/resume.service";
 export const upload = asyncHandler(async (req: Request, res: Response) => {
   const file = req.file;
 
-  console.log("========== DEBUG ==========");
-  console.log("BODY:", req.body);
-  console.log("FILE:", req.file);
-  console.log("FILES:", req.files);
-  console.log("CONTENT-TYPE:", req.headers["content-type"]);
-  console.log("===========================");
-
   if (!file) {
     throw new ApiError(400, "Please upload a PDF resume.");
   }

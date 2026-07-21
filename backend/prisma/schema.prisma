@@ -13,42 +13,33 @@ model User {
   email     String     @unique
   password  String
   createdAt DateTime   @default(now())
-
-  resumes   Resume[]
   analyses  Analysis[]
+  resumes   Resume?
 }
 
 model Resume {
-  id            String      @id @default(cuid())
+  id            String     @id @default(cuid())
   fileName      String
   extractedText String
-  uploadedAt    DateTime    @default(now())
-
-  userId String @unique
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  uploadedAt    DateTime   @default(now())
+  userId        String     @unique
   analyses      Analysis[]
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Analysis {
-  id                String   @id @default(cuid())
-
-  atsScore          Int
-  matchPercentage   Int?
-
-  skillsFound       Json
-  missingKeywords   Json
-  strengths         Json
-  weaknesses        Json
-  suggestions       Json
-
-  jobDescription    String?
-
-  createdAt         DateTime @default(now())
-
-  userId            String
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  resumeId          String
-  resume            Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  id              String   @id @default(cuid())
+  atsScore        Int
+  matchPercentage Int?
+  skillsFound     Json
+  missingKeywords Json
+  strengths       Json
+  weaknesses      Json
+  suggestions     Json
+  jobDescription  String?
+  createdAt       DateTime @default(now())
+  userId          String
+  resumeId        String
+  resume          Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
