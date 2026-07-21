@@ -1,16 +1,17 @@
 import fs from "fs";
 import pdfParse from "pdf-parse";
 
-const extractPdfText = async (filePath: string): Promise<string> => {
+const extractPdf = async (filePath: string): Promise<string> => {
   try {
-    const buffer = fs.readFileSync(filePath);
+    const fileBuffer = fs.readFileSync(filePath);
 
-    const data = await pdfParse(buffer);
+    const pdfData = await pdfParse(fileBuffer);
 
-    return data.text.trim();
+    return pdfData.text.replace(/\s+/g, " ").trim();
   } catch (error) {
-    throw new Error("Failed to extract PDF text");
+    console.error("PDF Extraction Error:", error);
+    throw new Error("Failed to extract text from PDF.");
   }
 };
 
-export default extractPdfText;
+export default extractPdf;

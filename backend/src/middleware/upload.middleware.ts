@@ -15,8 +15,8 @@ const storage = multer.diskStorage({
   },
 
   filename: (_req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
+    const uniqueFileName = `${Date.now()}-${file.originalname}`;
+    cb(null, uniqueFileName);
   },
 });
 
@@ -35,6 +35,9 @@ const fileFilter: multer.Options["fileFilter"] = (
 const upload = multer({
   storage,
   fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5 MB
+  },
 });
 
 export default upload;

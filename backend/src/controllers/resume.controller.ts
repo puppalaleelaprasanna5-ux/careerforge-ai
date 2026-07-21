@@ -1,33 +1,42 @@
 import { Request, Response } from "express";
 
 import asyncHandler from "../utils/asyncHandler";
-import ApiResponse from "../utils/ApiResponse";
 import ApiError from "../utils/ApiError";
+import ApiResponse from "../utils/ApiResponse";
 
 import { uploadResume } from "../services/resume.service";
 
-export const upload = asyncHandler(
-  async (req: Request, res: Response) => {
-    const file = req.file;
+export const upload = asyncHandler(async (req: Request, res: Response) => {
+  const file = req.file;
 
-    if (!file) {
-      throw new ApiError(400, "Please upload a PDF resume");
-    }
+  console.log("========== DEBUG ==========");
+  console.log("BODY:", req.body);
+  console.log("FILE:", req.file);
+  console.log("FILES:", req.files);
+  console.log("CONTENT-TYPE:", req.headers["content-type"]);
+  console.log("===========================");
 
-    // Temporary user ID until JWT middleware is added
-    const userId = req.body.userId;
-
-    if (!userId) {
-      throw new ApiError(400, "User ID is required");
-    }
-
-    const resume = await uploadResume(userId, file);
-
-    res.status(201).json(
-      new ApiResponse(
-        "Resume uploaded successfully",
-        resume
-      )
-    );
+  if (!file) {
+    throw new ApiError(400, "Please upload a PDF resume.");
   }
-);
+
+  /**
+   * Temporary
+   * We'll replace this with req.user.id
+   * after JWT middleware is added.
+   */
+  const userId = req.body.userId;
+
+  if (!userId) {
+    throw new ApiError(400, "User ID is required.");
+  }
+
+  const resume = await uploadResume(userId, file);
+
+  res.status(201).json(
+    new ApiResponse(
+      "Resume uploaded successfully.",
+      resume
+    )
+  );
+});

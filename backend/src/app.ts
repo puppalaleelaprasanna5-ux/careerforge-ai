@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 
 import authRoutes from "./routes/auth.routes";
+import resumeRoutes from "./routes/resume.routes";
+
 import errorHandler from "./middleware/error.middleware";
 
 const app = express();
@@ -17,8 +19,9 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/resume", resumeRoutes);
 
-// Always last
+// Global Error Handler
 app.use(errorHandler);
 
 export default app;
