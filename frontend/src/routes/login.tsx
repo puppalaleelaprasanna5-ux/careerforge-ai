@@ -7,6 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { login } from "@/services/auth";
+import { toast } from "sonner";
+import { saveAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -23,7 +26,10 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const nav = useNavigate();
   const [loading, setLoading] = useState(false);
-  return (
+
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] = useState(""); return (
     <div className="dark relative min-h-screen">
       <Backdrop />
       <AuthShell
@@ -51,15 +57,58 @@ function LoginPage() {
         </div>
         <form
           className="space-y-4"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            setLoading(true);
-            setTimeout(() => nav({ to: "/dashboard" }), 700);
+
+            try {
+              setLoading(true);
+
+              const response = await login({
+                email,
+                password,
+              });
+
+              localStorage.setItem(
+                "token",
+                response.data.token
+              );
+
+              localStorage.setItem(
+                "user",
+                JSON.stringify(response.data.user)
+              );
+
+              toast.success(response.message);
+
+              nav({
+                to: "/dashboard",
+              });
+
+            } catch (error: any) {
+
+              toast.error(
+                error.response?.data?.message ||
+                "Login failed"
+              );
+
+            } finally {
+
+              setLoading(false);
+
+            }
           }}
         >
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="you@company.com" required className="rounded-xl" />
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@company.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="rounded-xl"
+            />
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -68,7 +117,15 @@ function LoginPage() {
                 Forgot?
               </a>
             </div>
-            <Input id="password" type="password" placeholder="••••••••" required className="rounded-xl" />
+            <Input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="rounded-xl"
+            />
           </div>
           <Button type="submit" className="glow-primary w-full rounded-xl bg-primary hover:bg-primary/90" disabled={loading}>
             {loading ? "Signing in…" : "Sign in"}
